@@ -39,7 +39,7 @@ namespace ImageTemplate.Classes
                         Edge edgeB = new Edge();
                         Vertix newVertix=new Vertix();
                         int x=i+data.dx[s];
-                        int y=i+data.dy[s];
+                        int y=j+data.dy[s];
                         if (!(data.isValid(n, m, x, y)))
                         {
                             continue;
