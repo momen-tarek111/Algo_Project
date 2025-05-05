@@ -29,3 +29,13 @@ C:\Users\karas\Desktop\[TEMPLATE] ImageSegmentation\ImageSegmentation\obj\Debug\
 C:\Users\karas\Desktop\[TEMPLATE] ImageSegmentation\ImageSegmentation\bin\Debug\ImageTemplate.exe.config
 C:\Users\karas\Desktop\[TEMPLATE] ImageSegmentation\ImageSegmentation\bin\Debug\ImageTemplate.exe
 C:\Users\karas\Desktop\[TEMPLATE] ImageSegmentation\ImageSegmentation\bin\Debug\ImageTemplate.pdb
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.exe.config
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.exe
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.pdb
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.AssemblyReference.cache
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.MainForm.resources
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.Properties.Resources.resources
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.GenerateResource.cache
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.CoreCompileInputs.cache
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.exe
+F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.pdb
