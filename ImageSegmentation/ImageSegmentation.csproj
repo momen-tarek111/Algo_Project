@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DictionaryWriter.cs" />
     <Compile Include="Classes\RGBColor.cs" />
     <Compile Include="Classes\MainFlow.cs" />
     <Compile Include="Interfaces\IColor.cs" />

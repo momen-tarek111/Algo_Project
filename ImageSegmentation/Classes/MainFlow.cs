@@ -7,26 +7,29 @@ using System.Threading.Tasks;
 
 namespace ImageTemplate.Classes
 {
-    public class FinalAnsewer
-    {
-        public RGBPixel[,] FinalImage;
-        public int NumOfComponents;
-    }
-
-
+ 
     public static class MainFlow
     {
-        public static void First(RGBPixel [,] image)
+        public static RGBPixel[,] First(RGBPixel [,] image)
         {
             Vertix[,] verticesR ;
             Vertix[,] verticesG;
             Vertix[,] verticesB;
             (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
-            //Console.WriteLine("cancelo");
 
             verticesB = SegmentationLogic(verticesB, data.edgesB);
             verticesG = SegmentationLogic(verticesG, data.edgesG);
             verticesR = SegmentationLogic(verticesR, data.edgesR);
+            
+            Dictionary<int, int> pixelCounts;
+            RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
+            data.edgesR.Clear();
+            data.edgesG.Clear();
+            data.edgesB.Clear();
+            data.counter = 0;
+            DictionaryWriter.WriteValuesToFile(pixelCounts, "C:\\Users\\TAG\\OneDrive\\Desktop\\output_project_algo.txt");
+
+            return outputImage;
         }
         public static (Vertix[,], Vertix[,], Vertix[,]) MakeGraph(RGBPixel[,] image , IColor color)
         {
@@ -58,52 +61,93 @@ namespace ImageTemplate.Classes
                 Vertix vertixFrom = graph[item.fromVertix.x, item.fromVertix.y];
 
 
+                var parent1 = data.Find(vertixTo);
+                var parent2 = data.Find(vertixFrom);
+                if (parent1 == parent2)
+                    continue;
 
-                double intensityC1 = vertixTo.Component.MaxInternalWeight;
-                double intensityC2 = vertixFrom.Component.MaxInternalWeight;
+                double intensityC1 = parent1.Component.MaxInternalWeight;
+                double intensityC2 = parent2.Component.MaxInternalWeight;
 
                 int k = 1;
 
-                double threshold1 = (double)k / (double)vertixTo.Component.VertixCount;
-                double threshold2 = (double)k / (double)vertixFrom.Component.VertixCount;
+                double threshold1 = (double)k / (double)parent1.Component.VertixCount;
+                double threshold2 = (double)k / (double)parent2.Component.VertixCount;
                 
                 double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
 
-                if (vertixTo.Component.ComponentId == 0)
-                    vertixTo.Component.ComponentId = ++data.counter;
-                if (vertixFrom.Component.ComponentId == 0)
-                    vertixFrom.Component.ComponentId = ++data.counter;
+              
 
-                if (vertixTo.Component.ComponentId == vertixFrom.Component.ComponentId)
-                    continue;
-
+               
+                
                 if (min >= diff)
                 {
-                    if(vertixTo.Component.VertixCount > 1 || vertixFrom.Component.VertixCount > 1)
-                    {
-                        vertixFrom.Component.MaxInternalWeight = 
-                            Math.Max(vertixFrom.Component.MaxInternalWeight,vertixTo.Component.MaxInternalWeight);
-                    }
-                    else
-                    {
-                        vertixFrom.Component.MaxInternalWeight = item.Weight;
-                    }
-                    
-                    vertixFrom.Component.VertixCount += vertixTo.Component.VertixCount;
-
-                    vertixTo.Component = vertixFrom.Component;
-
+                    data.Union(parent1, parent2, diff);
                 }
 
-
             }
-
+            for (int i = 0; i < graph.GetLength(0); i++)
+            {
+                for (int j = 0; j < graph.GetLength(1); j++)
+                {
+                    var root = data.Find(graph[i, j]);
+                    graph[i, j].Component.ComponentId = root.Component.ComponentId;
+                }
+            }
             return graph;
         }
-
-        public static FinalAnsewer MakeFinalImage(Vertix[,] graph)
+        public static RGBPixel[,] CombineAndVisualize(Vertix[,] redGraph,Vertix[,] greenGraph,Vertix[,] blueGraph,out Dictionary<int, int> regionPixelCounts)
         {
-            return null;
+            int height = redGraph.GetLength(0);
+            int width = redGraph.GetLength(1);
+
+            RGBPixel[,] result = new RGBPixel[height, width];
+
+            Dictionary<string, int> labelMap = new Dictionary<string, int>();
+            Dictionary<int, RGBPixel> labelToColor = new Dictionary<int, RGBPixel>();
+            regionPixelCounts = new Dictionary<int, int>();
+
+            Random rand = new Random();
+            int labelCounter = 1;
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    long redLabel = redGraph[i, j].Component.ComponentId;
+                    long greenLabel = greenGraph[i, j].Component.ComponentId;
+                    long blueLabel = blueGraph[i, j].Component.ComponentId;
+
+                    string key = $"{redLabel}{greenLabel}{blueLabel}";
+
+                    if (!labelMap.ContainsKey(key))
+                    {
+                        labelMap[key] = labelCounter++;
+                    }
+
+                    int finalLabel = labelMap[key];
+
+                    // Assign random color if first time
+                    if (!labelToColor.ContainsKey(finalLabel))
+                    {
+                        byte r = (byte)rand.Next(256);
+                        byte g = (byte)rand.Next(256);
+                        byte b = (byte)rand.Next(256);
+                        labelToColor[finalLabel] = new RGBPixel(r, g, b);
+                    }
+
+                    // Count pixels in each final region
+                    if (!regionPixelCounts.ContainsKey(finalLabel))
+                    {
+                        regionPixelCounts[finalLabel] = 0;
+                    }
+                    regionPixelCounts[finalLabel]++;
+
+                    result[i, j] = labelToColor[finalLabel];
+                }
+            }
+            return result;
         }
+        
     }
 }

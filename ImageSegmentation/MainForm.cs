@@ -37,8 +37,8 @@ namespace ImageTemplate
             double sigma = double.Parse(txtGaussSigma.Text);
             int maskSize = (int)nudMaskSize.Value ;
             //ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
-            MainFlow.First(ImageMatrix);
-            ImageOperations.DisplayImage(ImageMatrix, pictureBox2);
+            
+            ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
         }
 
         private void MainForm_Load(object sender, EventArgs e)

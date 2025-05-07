@@ -39,3 +39,13 @@ F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentati
 F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.CoreCompileInputs.cache
 F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.exe
 F:\College\Algo\Project\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.pdb
+D:\last_project_algo\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.exe.config
+D:\last_project_algo\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.exe
+D:\last_project_algo\Algo_Project\ImageSegmentation\bin\Debug\ImageTemplate.pdb
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.AssemblyReference.cache
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.MainForm.resources
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.Properties.Resources.resources
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.GenerateResource.cache
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageSegmentation.csproj.CoreCompileInputs.cache
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.exe
+D:\last_project_algo\Algo_Project\ImageSegmentation\obj\Debug\ImageTemplate.pdb

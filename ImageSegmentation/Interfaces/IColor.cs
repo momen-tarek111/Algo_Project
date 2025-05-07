@@ -41,6 +41,7 @@ namespace ImageTemplate.Interfaces
     {
         public long x;
         public long y;
+        public Vertix Parent;
         public List<Edge> Edges = new List<Edge>();
         public Component Component = new Component();
     }
@@ -66,6 +67,45 @@ namespace ImageTemplate.Interfaces
         public static List<Edge> edgesG = new List<Edge>();
         public static List<Edge> edgesB = new List<Edge>();
         public static List<Edge> edgesR = new List<Edge>();
+
+        public static Vertix Find(Vertix v)
+        {
+            if (v.Parent != v)
+                v.Parent = Find(v.Parent);
+            return v.Parent;
+        }
+
+        public static void Union(Vertix v1, Vertix v2, double edgeWeight)
+        {
+            var root1 = Find(v1);
+            var root2 = Find(v2);
+
+            if (root1 == root2)
+                return;
+
+            if (root1.Component.VertixCount < root2.Component.VertixCount)
+            {
+                root1.Parent = root2;
+                root2.Component.VertixCount += root1.Component.VertixCount;
+                root2.Component.MaxInternalWeight = Math.Max(
+                    Math.Max(root2.Component.MaxInternalWeight
+                    , edgeWeight), root1.Component.MaxInternalWeight);
+
+
+                root2.Component.ComponentId = ++data.counter;
+            }
+            else
+            {
+                root2.Parent = root1;
+                root1.Component.VertixCount += root2.Component.VertixCount;
+                root1.Component.MaxInternalWeight = Math.Max(
+                    Math.Max(root2.Component.MaxInternalWeight
+                    , edgeWeight), root1.Component.MaxInternalWeight);
+
+                root1.Component.ComponentId = ++data.counter;
+            }
+        }
+
     }
     public interface IColor
     {
