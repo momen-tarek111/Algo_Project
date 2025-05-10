@@ -27,8 +27,7 @@ namespace ImageTemplate.Classes
             data.edgesG.Clear();
             data.edgesB.Clear();
             data.counter = 0;
-            DictionaryWriter.WriteValuesToFile(pixelCounts, "C:\\Users\\TAG\\OneDrive\\Desktop\\output_project_algo.txt");
-
+            DictionaryWriter.WriteValuesToFile(pixelCounts, "C:\\Users\\karas\\Desktop\\output_project_algo.txt");
             return outputImage;
         }
         public static (Vertix[,], Vertix[,], Vertix[,]) MakeGraph(RGBPixel[,] image , IColor color)
@@ -68,7 +67,6 @@ namespace ImageTemplate.Classes
 
                 double intensityC1 = parent1.Component.MaxInternalWeight;
                 double intensityC2 = parent2.Component.MaxInternalWeight;
-
                 int k = 1;
 
                 double threshold1 = (double)k / (double)parent1.Component.VertixCount;
@@ -76,15 +74,10 @@ namespace ImageTemplate.Classes
                 
                 double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
 
-              
-
-               
-                
                 if (min >= diff)
                 {
                     data.Union(parent1, parent2, diff);
                 }
-
             }
             for (int i = 0; i < graph.GetLength(0); i++)
             {
@@ -100,16 +93,13 @@ namespace ImageTemplate.Classes
         {
             int height = redGraph.GetLength(0);
             int width = redGraph.GetLength(1);
-
             RGBPixel[,] result = new RGBPixel[height, width];
-
             Dictionary<string, int> labelMap = new Dictionary<string, int>();
             Dictionary<int, RGBPixel> labelToColor = new Dictionary<int, RGBPixel>();
             regionPixelCounts = new Dictionary<int, int>();
-
             Random rand = new Random();
             int labelCounter = 1;
-
+            data.FinalLabels=new int[height, width];
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
@@ -117,14 +107,11 @@ namespace ImageTemplate.Classes
                     long redLabel = redGraph[i, j].Component.ComponentId;
                     long greenLabel = greenGraph[i, j].Component.ComponentId;
                     long blueLabel = blueGraph[i, j].Component.ComponentId;
-
                     string key = $"{redLabel}{greenLabel}{blueLabel}";
-
                     if (!labelMap.ContainsKey(key))
                     {
                         labelMap[key] = labelCounter++;
                     }
-
                     int finalLabel = labelMap[key];
 
                     // Assign random color if first time
@@ -135,7 +122,6 @@ namespace ImageTemplate.Classes
                         byte b = (byte)rand.Next(256);
                         labelToColor[finalLabel] = new RGBPixel(r, g, b);
                     }
-
                     // Count pixels in each final region
                     if (!regionPixelCounts.ContainsKey(finalLabel))
                     {
@@ -144,10 +130,11 @@ namespace ImageTemplate.Classes
                     regionPixelCounts[finalLabel]++;
 
                     result[i, j] = labelToColor[finalLabel];
+
+                    data.FinalLabels[i, j] = finalLabel;
                 }
             }
             return result;
         }
-        
     }
 }

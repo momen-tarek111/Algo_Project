@@ -12,7 +12,6 @@ namespace ImageTemplate.Interfaces
         public Vertix toVertix { set; get; }
         public Vertix fromVertix { set; get; }
         public double Weight { set; get; }
-
         public int CompareTo(Edge other)
         {
             if (other == null) return 1;
@@ -57,9 +56,10 @@ namespace ImageTemplate.Interfaces
     {
         public static int[] dx = { -1, 1, 0, 0, -1, -1, 1, 1};
         public static int[] dy = { 0 , 0, 1, -1, 1, -1, 1,-1 };
+        public static int[,] FinalLabels;
+        public static RGBPixel[,] OriginImage;
         public static bool isValid(int n,int m,int i, int j)
         {
-            
             return i>=0 && j>=0 && i<n && j<m;
         }
         public static int counter = 0;
