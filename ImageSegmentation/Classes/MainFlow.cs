@@ -18,11 +18,9 @@ namespace ImageTemplate.Classes
             Vertix[,] verticesG;
             Vertix[,] verticesB;
             (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
-
             verticesB = SegmentationLogic(verticesB, data.edgesB);
             verticesG = SegmentationLogic(verticesG, data.edgesG);
             verticesR = SegmentationLogic(verticesR, data.edgesR);
-            
             Dictionary<int, int> pixelCounts;
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
             timer.Stop();
@@ -45,11 +43,11 @@ namespace ImageTemplate.Classes
         }
         public static List<Edge> SortEdges2(List<Edge> edges)
         {
-            return edges.OrderBy(e => e.Weight)               // First by Weight (ascending)
-                        .ThenBy(e => e.fromVertix.x)          // Then by fromVertix.x (ascending)
-                        .ThenBy(e => e.fromVertix.y)          // Then by fromVertix.y (ascending)
-                        .ThenBy(e => e.toVertix.x)            // Then by toVertix.x (ascending)
-                        .ThenBy(e => e.toVertix.y)            // Finally by toVertix.y (ascending)
+            return edges.OrderBy(e => e.Weight)               
+                        .ThenBy(e => e.fromVertix.x)          
+                        .ThenBy(e => e.fromVertix.y)          
+                        .ThenBy(e => e.toVertix.x)            
+                        .ThenBy(e => e.toVertix.y)            
                         .ToList();
         }
         public static Vertix[,] SegmentationLogic(Vertix[,] graph , List<Edge> edges)
@@ -71,10 +69,9 @@ namespace ImageTemplate.Classes
 
                 double intensityC1 = parent1.Component.MaxInternalWeight;
                 double intensityC2 = parent2.Component.MaxInternalWeight;
-                int k = 30000;
 
-                double threshold1 = (double)k / (double)parent1.Component.VertixCount;
-                double threshold2 = (double)k / (double)parent2.Component.VertixCount;
+                double threshold1 = (double)data.K / (double)parent1.Component.VertixCount;
+                double threshold2 = (double)data.K / (double)parent2.Component.VertixCount;
                 
                 double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
 
@@ -117,8 +114,6 @@ namespace ImageTemplate.Classes
                         labelMap[key] = labelCounter++;
                     }
                     int finalLabel = labelMap[key];
-
-                    // Assign random color if first time
                     if (!labelToColor.ContainsKey(finalLabel))
                     {
                         byte r = (byte)rand.Next(256);
@@ -126,15 +121,12 @@ namespace ImageTemplate.Classes
                         byte b = (byte)rand.Next(256);
                         labelToColor[finalLabel] = new RGBPixel(r, g, b);
                     }
-                    // Count pixels in each final region
                     if (!regionPixelCounts.ContainsKey(finalLabel))
                     {
                         regionPixelCounts[finalLabel] = 0;
                     }
                     regionPixelCounts[finalLabel]++;
-
                     result[i, j] = labelToColor[finalLabel];
-
                     data.FinalLabels[i, j] = finalLabel;
                 }
             }

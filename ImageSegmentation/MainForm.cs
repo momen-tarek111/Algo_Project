@@ -39,7 +39,17 @@ namespace ImageTemplate
             double sigma = double.Parse(txtGaussSigma.Text);
             int maskSize = (int)nudMaskSize.Value ;
             data.OriginImage = ImageMatrix;
-            ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
+            try
+            {
+                data.K=int.Parse(textBox1.Text);
+
+            }
+            catch
+            {
+                MessageBox.Show("Enter K Value");
+                return;
+            }
+            //ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
         }
         private void MainForm_Load(object sender, EventArgs e)
@@ -82,6 +92,21 @@ namespace ImageTemplate
                 }
             }
             ImageOperations.DisplayImage(FinailImage, pictureBox2);
+        }
+
+        private void nudMaskSize_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
