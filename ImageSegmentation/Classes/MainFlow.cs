@@ -1,6 +1,7 @@
 ﻿using ImageTemplate.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace ImageTemplate.Classes
     {
         public static RGBPixel[,] First(RGBPixel [,] image)
         {
+            Stopwatch timer = Stopwatch.StartNew();
             Vertix[,] verticesR ;
             Vertix[,] verticesG;
             Vertix[,] verticesB;
@@ -23,6 +25,8 @@ namespace ImageTemplate.Classes
             
             Dictionary<int, int> pixelCounts;
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
+            timer.Stop();
+            data.time = timer.ElapsedMilliseconds;
             data.edgesR.Clear();
             data.edgesG.Clear();
             data.edgesB.Clear();
@@ -67,7 +71,7 @@ namespace ImageTemplate.Classes
 
                 double intensityC1 = parent1.Component.MaxInternalWeight;
                 double intensityC2 = parent2.Component.MaxInternalWeight;
-                int k = 1;
+                int k = 30000;
 
                 double threshold1 = (double)k / (double)parent1.Component.VertixCount;
                 double threshold2 = (double)k / (double)parent2.Component.VertixCount;

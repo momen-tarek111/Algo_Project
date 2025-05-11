@@ -58,6 +58,7 @@ namespace ImageTemplate.Interfaces
         public static int[] dy = { 0 , 0, 1, -1, 1, -1, 1,-1 };
         public static int[,] FinalLabels;
         public static RGBPixel[,] OriginImage;
+        public static long time;
         public static bool isValid(int n,int m,int i, int j)
         {
             return i>=0 && j>=0 && i<n && j<m;

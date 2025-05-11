@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageTemplate.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,6 +14,8 @@ public class DictionaryWriter
             {
                 writer.WriteLine(value);
             }
+            writer.WriteLine(data.time);
+
         }
     }
 }
