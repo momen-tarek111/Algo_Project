@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class DictionaryWriter
 {
@@ -9,12 +10,15 @@ public class DictionaryWriter
     {
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            writer.WriteLine(dict.Count);
-            foreach (var value in dict.Values)
+            
+            long s = 0;
+            writer.WriteLine("Total Regions: " + dict.Count);
+            foreach (var value in dict.OrderByDescending(p => p.Value))
             {
-                writer.WriteLine(value);
+                s += long.Parse(value.Value.ToString());
+                writer.WriteLine($"Region {value.Key} → {value.Value} pixels");
             }
-            writer.WriteLine(data.time);
+            writer.WriteLine(s);
 
         }
     }

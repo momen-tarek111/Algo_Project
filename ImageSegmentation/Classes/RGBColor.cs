@@ -53,8 +53,6 @@ namespace ImageTemplate.Classes
                             Weight = Math.Abs(image[i, j].red - image[x, y].red)
                         };
                         data.edgesR.Add(edgeR);
-                        verticesR[i, j].Edges.Add(edgeR);
-
                         Edge edgeG = new Edge
                         {
                             fromVertix = vG,
@@ -62,8 +60,6 @@ namespace ImageTemplate.Classes
                             Weight = Math.Abs(image[i, j].green - image[x, y].green)
                         };
                         data.edgesG.Add(edgeG);
-                        verticesG[i, j].Edges.Add(edgeG);
-
                         Edge edgeB = new Edge
                         {
                             fromVertix = vB,
@@ -71,7 +67,6 @@ namespace ImageTemplate.Classes
                             Weight = Math.Abs(image[i, j].blue - image[x, y].blue)
                         };
                         data.edgesB.Add(edgeB);
-                        verticesB[i, j].Edges.Add(edgeB);
                     }
                 }
             }

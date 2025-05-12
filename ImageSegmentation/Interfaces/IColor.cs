@@ -1,6 +1,7 @@
 ﻿using ImageTemplate.Classes;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,32 +17,27 @@ namespace ImageTemplate.Interfaces
         {
             if (other == null) return 1;
 
-            // 1. First by Weight (ascending)
             int weightComparison = this.Weight.CompareTo(other.Weight);
             if (weightComparison != 0) return weightComparison;
 
-            // 2. Then by fromVertix.x (ascending)
             int fromXComparison = this.fromVertix.x.CompareTo(other.fromVertix.x);
             if (fromXComparison != 0) return fromXComparison;
 
-            // 3. Then by fromVertix.y (ascending)
             int fromYComparison = this.fromVertix.y.CompareTo(other.fromVertix.y);
             if (fromYComparison != 0) return fromYComparison;
 
-            // 4. Then by toVertix.x (ascending)
             int toXComparison = this.toVertix.x.CompareTo(other.toVertix.x);
             if (toXComparison != 0) return toXComparison;
 
-            // 5. Finally by toVertix.y (ascending)
             return this.toVertix.y.CompareTo(other.toVertix.y);
         }
     }
     public class Vertix
     {
+        public int RegionId = 0;
         public long x;
         public long y;
         public Vertix Parent;
-        public List<Edge> Edges = new List<Edge>();
         public Component Component = new Component();
     }
     public class Component
@@ -50,7 +46,6 @@ namespace ImageTemplate.Interfaces
         public double MaxInternalWeight = 0;
         public RGBPixel UniqueColor = new RGBPixel();
         public long VertixCount = 1;
-
     }
     static class data
     {
@@ -65,26 +60,24 @@ namespace ImageTemplate.Interfaces
             return i>=0 && j>=0 && i<n && j<m;
         }
         public static int counter = 0;
-
         public static List<Edge> edgesG = new List<Edge>();
         public static List<Edge> edgesB = new List<Edge>();
         public static List<Edge> edgesR = new List<Edge>();
-
         public static Vertix Find(Vertix v)
         {
-            if (v.Parent != v)
-                v.Parent = Find(v.Parent);
-            return v.Parent;
-        }
+            Vertix temp = v;
 
+            while (temp.Parent != temp)
+                temp = temp.Parent;
+            v.Parent = temp;
+            return temp;
+        }
         public static void Union(Vertix v1, Vertix v2, double edgeWeight)
         {
             var root1 = Find(v1);
             var root2 = Find(v2);
-
             if (root1 == root2)
                 return;
-
             if (root1.Component.VertixCount < root2.Component.VertixCount)
             {
                 root1.Parent = root2;
@@ -92,9 +85,10 @@ namespace ImageTemplate.Interfaces
                 root2.Component.MaxInternalWeight = Math.Max(
                     Math.Max(root2.Component.MaxInternalWeight
                     , edgeWeight), root1.Component.MaxInternalWeight);
-
-
-                root2.Component.ComponentId = ++data.counter;
+                if (root2.Component.ComponentId == 0)
+                {
+                    root2.Component.ComponentId = ++data.counter;
+                }
             }
             else
             {
@@ -103,11 +97,12 @@ namespace ImageTemplate.Interfaces
                 root1.Component.MaxInternalWeight = Math.Max(
                     Math.Max(root2.Component.MaxInternalWeight
                     , edgeWeight), root1.Component.MaxInternalWeight);
-
-                root1.Component.ComponentId = ++data.counter;
+                if (root1.Component.ComponentId == 0)
+                {
+                    root1.Component.ComponentId = ++data.counter;
+                }
             }
         }
-
     }
     public interface IColor
     {

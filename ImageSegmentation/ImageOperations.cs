@@ -55,7 +55,6 @@ namespace ImageTemplate
                 bool Format32 = false;
                 bool Format24 = false;
                 bool Format8 = false;
-
                 if (original_bm.PixelFormat == PixelFormat.Format24bppRgb)
                 {
                     Format24 = true;
