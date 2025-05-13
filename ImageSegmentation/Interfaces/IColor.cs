@@ -44,7 +44,6 @@ namespace ImageTemplate.Interfaces
     {
         public long ComponentId = 0;
         public double MaxInternalWeight = 0;
-        public RGBPixel UniqueColor = new RGBPixel();
         public long VertixCount = 1;
     }
     static class data
@@ -66,7 +65,6 @@ namespace ImageTemplate.Interfaces
         public static Vertix Find(Vertix v)
         {
             Vertix temp = v;
-
             while (temp.Parent != temp)
                 temp = temp.Parent;
             v.Parent = temp;

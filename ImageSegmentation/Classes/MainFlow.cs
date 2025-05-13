@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ImageTemplate.Classes
 {
@@ -19,16 +21,58 @@ namespace ImageTemplate.Classes
             Vertix[,] verticesG;
             Vertix[,] verticesB;
             (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
-            verticesB = SegmentationLogic(verticesB, data.edgesB);
-            
-            data.counter = 0;
             verticesG = SegmentationLogic(verticesG, data.edgesG);
             data.counter = 0;
             verticesR = SegmentationLogic(verticesR, data.edgesR);
             data.counter = 0;
-
+            verticesB = SegmentationLogic(verticesB, data.edgesB);
+            data.counter = 0;
             Dictionary<int, int> pixelCounts;
+            HashSet<long> redIDs = new HashSet<long>();
+            HashSet<long> greenIDs = new HashSet<long>();
+            HashSet<long> blueIDs = new HashSet<long>();
+
+            for (int i = 0; i < verticesR.GetLength(0); i++)
+            {
+                for (int j = 0; j < verticesR.GetLength(1); j++)
+                {
+                    redIDs.Add(verticesR[i, j].Component.ComponentId);
+                    greenIDs.Add(verticesG[i, j].Component.ComponentId);
+                    blueIDs.Add(verticesB[i, j].Component.ComponentId);
+                }
+            }
+
+            Console.WriteLine($"Red Segments: {redIDs.Count}");
+            Console.WriteLine($"Green Segments: {greenIDs.Count}");
+            Console.WriteLine($"Blue Segments: {blueIDs.Count}");
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
+            for (int i = 0; i < verticesR.GetLength(0); i++)
+            {
+                for (int j = 0; j < verticesR.GetLength(1); j++)
+                {
+                    var root = data.Find(verticesR[i, j]);
+                    if (root.Component.ComponentId != verticesR[i, j].Component.ComponentId)
+                    {
+                        Console.WriteLine($"❌ Mismatch at ({i},{j})");
+                    }
+                }
+            }
+            using (StreamWriter sw = new StreamWriter("C:\\Users\\karas\\Desktop\\final_labels_debug.txt"))
+            {
+                for (int i = 0; i < data.FinalLabels.GetLength(0); i++)
+                {
+                    for (int j = 0; j < data.FinalLabels.GetLength(1); j++)
+                    {
+                        sw.Write(data.FinalLabels[i, j] + " ");
+                    }
+                    sw.WriteLine();
+                }
+            }
+            int totalPixels = image.GetLength(0) * image.GetLength(1);
+            int countedPixels = pixelCounts.Values.Sum();
+            Console.WriteLine($"✅ Total Pixels: {totalPixels}");
+            Console.WriteLine($"✅ Counted Pixels: {countedPixels}");
+            Console.WriteLine($"✅ Regions Found: {pixelCounts.Count}");
             timer.Stop();
             data.time = timer.ElapsedMilliseconds;
             data.edgesR.Clear();
@@ -46,54 +90,67 @@ namespace ImageTemplate.Classes
         {
             return edges.OrderBy(e => e.Weight).ToList();
         }
-        public static Vertix[,] SegmentationLogic(Vertix[,] graph , List<Edge> edges)
+        public static Vertix[,] SegmentationLogic(Vertix[,] graph, List<Edge> edges)
         {
             edges = SortEdges2(edges);
 
             foreach (var item in edges)
             {
                 double diff = item.Weight;
-                Vertix vertixTo = graph[item.toVertix.x, item.toVertix.y];
-                Vertix vertixFrom = graph[item.fromVertix.x, item.fromVertix.y];
-                var parent1 = data.Find(vertixTo);
-                var parent2 = data.Find(vertixFrom);
+
+                Vertix v1 = graph[item.fromVertix.x, item.fromVertix.y];
+                Vertix v2 = graph[item.toVertix.x, item.toVertix.y];
+
+                var parent1 = data.Find(v1);
+                var parent2 = data.Find(v2);
+
                 if (parent1 == parent2)
                     continue;
+
                 double intensityC1 = parent1.Component.MaxInternalWeight;
                 double intensityC2 = parent2.Component.MaxInternalWeight;
-                double threshold1 = (double)data.K / (double)parent1.Component.VertixCount;
-                double threshold2 = (double)data.K / (double)parent2.Component.VertixCount;
+                double threshold1 = (double)data.K / parent1.Component.VertixCount;
+                double threshold2 = (double)data.K / parent2.Component.VertixCount;
                 double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
+
                 if (min >= diff)
                 {
-                    data.Union(parent1, parent2, diff);
+                    data.Union(v1, v2, diff);
                 }
             }
+
+            Dictionary<Vertix, int> componentIds = new Dictionary<Vertix, int>();
+            int compCounter = 1;
+
             for (int i = 0; i < graph.GetLength(0); i++)
             {
                 for (int j = 0; j < graph.GetLength(1); j++)
                 {
                     var root = data.Find(graph[i, j]);
-                    graph[i, j].Component.ComponentId = root.Component.ComponentId;
+
+                    if (!componentIds.ContainsKey(root))
+                    {
+                        componentIds[root] = compCounter++;
+                    }
+
+                    graph[i, j].Component.ComponentId = componentIds[root];
                 }
             }
+
             return graph;
         }
+
         public static RGBPixel[,] CombineAndVisualize(Vertix[,] redGraph, Vertix[,] greenGraph, Vertix[,] blueGraph,out Dictionary<int, int> regionPixelCounts)
         {
             int height = redGraph.GetLength(0);
             int width = redGraph.GetLength(1);
             RGBPixel[,] result = new RGBPixel[height, width];
-            int[,] labels = new int[height, width];
             bool[,] visited = new bool[height, width];
-
             Dictionary<int, RGBPixel> labelToColor = new Dictionary<int, RGBPixel>();
             regionPixelCounts = new Dictionary<int, int>();
             Random rand = new Random();
-
             int RegionId = 1;
             data.FinalLabels = new int[height, width];
-
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
@@ -101,7 +158,6 @@ namespace ImageTemplate.Classes
                     if (visited[i, j])
                         continue;
 
-                    // Start a new region
                     int currentRegion = RegionId++;
                     RGBPixel regionColor = new RGBPixel(
                         (byte)rand.Next(256),
@@ -120,7 +176,6 @@ namespace ImageTemplate.Classes
                     {
                         var (x, y) = queue.Dequeue();
 
-                        labels[x, y] = currentRegion;
                         data.FinalLabels[x, y] = currentRegion;
                         result[x, y] = regionColor;
                         regionPixelCounts[currentRegion]++;
@@ -151,108 +206,6 @@ namespace ImageTemplate.Classes
             return result;
         }
 
-
     }
 }
 
-        //public static RGBPixel[,] CombineAndVisualize(Vertix[,] redGraph, Vertix[,] greenGraph, Vertix[,] blueGraph, out Dictionary<int, int> regionPixelCounts)
-        //{
-        //    int height = redGraph.GetLength(0);
-        //    int width = redGraph.GetLength(1);
-        //    RGBPixel[,] result = new RGBPixel[height, width];
-        //    Dictionary<string, int> labelMap = new Dictionary<string, int>();
-        //    Dictionary<int, RGBPixel> labelToColor = new Dictionary<int, RGBPixel>();
-        //    regionPixelCounts = new Dictionary<int, int>();
-        //    Random rand = new Random();
-        //    int labelCounter = 1;
-        //    data.FinalLabels = new int[height, width];
-        //    for (int i = 0; i < height; i++)
-        //    {
-        //        for (int j = 0; j < width; j++)
-        //        {
-        //            long redLabel = redGraph[i, j].Component.ComponentId;
-        //            long greenLabel = greenGraph[i, j].Component.ComponentId;
-        //            long blueLabel = blueGraph[i, j].Component.ComponentId;
-        //            string key = $"{redLabel}{greenLabel}{blueLabel}";
-        //            if (!labelMap.ContainsKey(key))
-        //            {
-        //                labelMap[key] = labelCounter++;
-        //            }
-        //            int finalLabel = labelMap[key];
-        //            if (!labelToColor.ContainsKey(finalLabel))
-        //            {
-        //                byte r = (byte)rand.Next(256);
-        //                byte g = (byte)rand.Next(256);
-        //                byte b = (byte)rand.Next(256);
-        //                labelToColor[finalLabel] = new RGBPixel(r, g, b);
-        //            }
-        //            if (!regionPixelCounts.ContainsKey(finalLabel))
-        //            {
-        //                regionPixelCounts[finalLabel] = 0;
-        //            }
-        //            regionPixelCounts[finalLabel]++;
-        //            result[i, j] = labelToColor[finalLabel];
-        //            data.FinalLabels[i, j] = finalLabel;
-        //        }
-        //    }
-        //    return result;
-        //}
-        //public static RGBPixel[,] CombineAndVisualize(Vertix[,] redGraph, Vertix[,] greenGraph, Vertix[,] blueGraph, out Dictionary<int, int> regionPixelCounts)
-        //{
-        //    int height = redGraph.GetLength(0);
-        //    int width = redGraph.GetLength(1);
-        //    RGBPixel[,] result = new RGBPixel[height, width];
-        //    //Dictionary<string, int> labelMap = new Dictionary<string, int>();
-        //    Dictionary<int, RGBPixel> labelToColor = new Dictionary<int, RGBPixel>();
-        //    regionPixelCounts = new Dictionary<int, int>();
-        //    bool[,] visited = new bool[height, width];
-        //    Random rand = new Random();
-        //    int RegionId = 0;
-        //    data.FinalLabels = new int[height, width];
-        //    for (int i = 0; i < height; i++)
-        //    {
-        //        for (int j = 0; j < width; j++)
-        //        {
-        //            if (redGraph[i, j].RegionId == 0 && greenGraph[i, j].RegionId == 0 && blueGraph[i, j].RegionId == 0)
-        //            {
-        //                RegionId += 1;
-        //                regionPixelCounts.Add(RegionId, 0);
-        //                byte r = (byte)rand.Next(256);
-        //                byte g = (byte)rand.Next(256);
-        //                byte b = (byte)rand.Next(256);
-        //                labelToColor[RegionId] = new RGBPixel(r, g, b);
-        //                redGraph[i, j].RegionId = RegionId;
-        //                greenGraph[i, j].RegionId = RegionId;
-        //                blueGraph[i, j].RegionId = RegionId;
-        //                regionPixelCounts[RegionId] += 1;
-        //                result[i, j] = labelToColor[RegionId];
-        //                data.FinalLabels[i, j] = RegionId;
-        //            }
-        //            for (int k = 0; k < 8; k++)
-        //            {
-        //                int x = i + data.dx[k];
-        //                int y = j + data.dy[k];
-
-        //                if (!data.isValid(height, width, x, y))
-        //                    continue;
-        //                if(visited[x, y])
-        //                    continue;
-        //                visited[x,y] = true;
-        //                long redLabel = redGraph[x, y].Component.ComponentId;
-        //                long greenLabel = greenGraph[x, y].Component.ComponentId;
-        //                long blueLabel = blueGraph[x, y].Component.ComponentId;
-        //                if (redLabel == redGraph[i, j].Component.ComponentId && greenLabel == greenGraph[i, j].Component.ComponentId && blueLabel == blueGraph[i, j].Component.ComponentId)
-        //                {
-        //                    int RegionIdNow = redGraph[i, j].RegionId;
-        //                    redGraph[x, y].RegionId = RegionIdNow;
-        //                    greenGraph[x, y].RegionId = RegionIdNow;
-        //                    blueGraph[x, y].RegionId = RegionIdNow;
-        //                    result[x, y] = labelToColor[RegionIdNow];
-        //                    regionPixelCounts[RegionIdNow] += 1;
-        //                    data.FinalLabels[x, y] = RegionIdNow;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return result;
-        //}

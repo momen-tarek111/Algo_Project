@@ -49,12 +49,15 @@ namespace ImageTemplate
                 MessageBox.Show("Enter K Value");
                 return;
             }
-            ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
+            if (checkBox1.Checked)
+            {
+                ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
+            }
             ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            checkBox1.Checked = true;
         }
 
         private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
