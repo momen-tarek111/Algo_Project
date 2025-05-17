@@ -10,16 +10,13 @@ public class DictionaryWriter
     {
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            
-            long s = 0;
-            writer.WriteLine("Total Regions: " + dict.Count);
+
+            writer.WriteLine(data.time);
+            writer.WriteLine(dict.Count);
             foreach (var value in dict.OrderByDescending(p => p.Value))
             {
-                s += long.Parse(value.Value.ToString());
-                writer.WriteLine($"Region {value.Key} → {value.Value} pixels");
+                writer.WriteLine(value.Value);
             }
-            writer.WriteLine(s);
-
         }
     }
 

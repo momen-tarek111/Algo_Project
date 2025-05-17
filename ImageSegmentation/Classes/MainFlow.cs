@@ -21,17 +21,28 @@ namespace ImageTemplate.Classes
             Vertix[,] verticesG;
             Vertix[,] verticesB;
             (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
-            verticesG = SegmentationLogic(verticesG, data.edgesG);
-            data.counter = 0;
-            verticesR = SegmentationLogic(verticesR, data.edgesR);
-            data.counter = 0;
-            verticesB = SegmentationLogic(verticesB, data.edgesB);
-            data.counter = 0;
+
+            Parallel.Invoke(
+            () => {
+                verticesG = SegmentationLogic(verticesG, data.edgesG);
+                },
+                () => {
+                    verticesR = SegmentationLogic(verticesR, data.edgesR);
+                },
+                () => {
+                    verticesB = SegmentationLogic(verticesB, data.edgesB);
+                }
+            );
+            //verticesG = SegmentationLogic(verticesG, data.edgesG);
+            //data.counter = 0;
+            //verticesR = SegmentationLogic(verticesR, data.edgesR);
+            //data.counter = 0;
+            //verticesB = SegmentationLogic(verticesB, data.edgesB);
+            //data.counter = 0;
             Dictionary<int, int> pixelCounts;
             HashSet<long> redIDs = new HashSet<long>();
             HashSet<long> greenIDs = new HashSet<long>();
             HashSet<long> blueIDs = new HashSet<long>();
-
             for (int i = 0; i < verticesR.GetLength(0); i++)
             {
                 for (int j = 0; j < verticesR.GetLength(1); j++)
@@ -41,7 +52,6 @@ namespace ImageTemplate.Classes
                     blueIDs.Add(verticesB[i, j].Component.ComponentId);
                 }
             }
-
             Console.WriteLine($"Red Segments: {redIDs.Count}");
             Console.WriteLine($"Green Segments: {greenIDs.Count}");
             Console.WriteLine($"Blue Segments: {blueIDs.Count}");
