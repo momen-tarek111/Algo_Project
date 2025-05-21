@@ -19,7 +19,8 @@ public class DictionaryWriter
         using (StreamWriter writer = new StreamWriter(timeFilePath))
         {
             writer.WriteLine(" Construnct Graph time -> " + data.time3);
-            writer.WriteLine(" sort time -> " + data.time2);
+            writer.WriteLine(" Segmentation time -> " + data.time4);
+            writer.WriteLine(" Compain time -> " + data.time2);
             writer.WriteLine(" Total Time -> "+data.time);
 
         }

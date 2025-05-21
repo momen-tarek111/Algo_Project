@@ -27,6 +27,7 @@ namespace ImageTemplate.Interfaces
         public double MaxInternalWeight = 0;
         public long VertixCount = 1;
     }
+
     static class data
     {
         public static int[] dx = { -1, 1, 0, 0, -1, -1, 1, 1};
@@ -36,8 +37,11 @@ namespace ImageTemplate.Interfaces
         public static long time;
         public static long time2;
         public static long time3;
+        public static long time4;
         public static int K;
-        public static List<int>[]sortArray;
+        public static List<KeyValuePair<int,int>>[] edgesR;
+        public static List<KeyValuePair<int, int>>[] edgesG;
+        public static List<KeyValuePair<int, int>>[] edgesB;
         public static bool isValid(int n,int m,int i, int j)
         {
             return i>=0 && j>=0 && i<n && j<m;
@@ -46,9 +50,9 @@ namespace ImageTemplate.Interfaces
         //public static List<Edge> edgesG = new List<Edge>();
         //public static List<Edge> edgesB = new List<Edge>();
         //public static List<Edge> edgesR = new List<Edge>();
-        public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesR;
-        public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesG;
-        public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesB;
+        //public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesR;
+        //public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesG;
+        //public static KeyValuePair<KeyValuePair<int, int>, double>[] edgesB;
         public static Vertix Find(Vertix v)
         {
             Vertix temp = v;

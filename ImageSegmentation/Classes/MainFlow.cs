@@ -26,7 +26,7 @@ namespace ImageTemplate.Classes
             (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
             timer2.Stop();
             data.time3 = timer2.ElapsedMilliseconds;
-            Stopwatch timer3 = Stopwatch.StartNew();
+
             //Parallel.Invoke(
             //() =>
             //    {
@@ -41,8 +41,8 @@ namespace ImageTemplate.Classes
             //        MergeInsertionSort(data.edgesB);
             //    }
             //);
-            timer3.Stop();
-            data.time2 = timer3.ElapsedMilliseconds;
+
+            Stopwatch timer4 = Stopwatch.StartNew();
             Parallel.Invoke(
             () =>
                 {
@@ -57,10 +57,13 @@ namespace ImageTemplate.Classes
                     verticesB = SegmentationLogic(verticesB, data.edgesB);
                 }
             );
+            timer4.Stop();
+            data.time4 = timer4.ElapsedMilliseconds;
             Dictionary<int, int> pixelCounts;
+            Stopwatch timer3 = Stopwatch.StartNew();
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
-
-
+            timer3.Stop();
+            data.time2 = timer3.ElapsedMilliseconds;
             timer.Stop();
             data.time = timer.ElapsedMilliseconds;
             //data.edgesR.Clear();
@@ -195,7 +198,7 @@ namespace ImageTemplate.Classes
         //}
         #endregion
 
-        public static Vertix[,] SegmentationLogic(Vertix[,] graph, KeyValuePair<KeyValuePair<int, int>, double>[] edges)
+        public static Vertix[,] SegmentationLogic(Vertix[,] graph, List<KeyValuePair<int, int>>[] edges)
         {
             Stopwatch timer = Stopwatch.StartNew();
             int height = graph.GetLength(0);
@@ -205,31 +208,58 @@ namespace ImageTemplate.Classes
             //FasterSort.FasterSort.Sort(edges, Comparer<Edge>.Create((a, b) => a.Weight.CompareTo(b.Weight)));
             timer.Stop();
             data.time2=timer.ElapsedMilliseconds;
-            foreach (var item in edges)
-            {
-                double diff = item.Value;
+            //foreach (var item in edges)
+            //{
+            //    double diff = item.Value;
                 
-                Vertix v1 = graph[(item.Key.Key/ width), ((item.Key.Key)- ((item.Key.Key / width)*width))];
-                Vertix v2 = graph[(item.Key.Value / width), ((item.Key.Value) - ((item.Key.Value / width)*width))];
+            //    Vertix v1 = graph[(item.Key.Key/ width), ((item.Key.Key)- ((item.Key.Key / width)*width))];
+            //    Vertix v2 = graph[(item.Key.Value / width), ((item.Key.Value) - ((item.Key.Value / width)*width))];
 
-                var parent1 = data.Find(v1);
-                var parent2 = data.Find(v2);
+            //    var parent1 = data.Find(v1);
+            //    var parent2 = data.Find(v2);
 
-                if (parent1 == parent2)
+            //    if (parent1 == parent2)
+            //        continue;
+
+            //    double intensityC1 = parent1.Component.MaxInternalWeight;
+            //    double intensityC2 = parent2.Component.MaxInternalWeight;
+            //    double threshold1 = (double)data.K / parent1.Component.VertixCount;
+            //    double threshold2 = (double)data.K / parent2.Component.VertixCount;
+            //    double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
+
+            //    if (min >= diff)
+            //    {
+            //        data.Union(v1, v2, diff);
+            //    }
+            //}
+            for (int i = 0; i < 256; i++)
+            {
+                if (edges[i] == null)
                     continue;
-
-                double intensityC1 = parent1.Component.MaxInternalWeight;
-                double intensityC2 = parent2.Component.MaxInternalWeight;
-                double threshold1 = (double)data.K / parent1.Component.VertixCount;
-                double threshold2 = (double)data.K / parent2.Component.VertixCount;
-                double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
-
-                if (min >= diff)
+                foreach (var item in edges[i])
                 {
-                    data.Union(v1, v2, diff);
+
+                    Vertix v1 = graph[(item.Key / width), ((item.Key) - ((item.Key / width) * width))];
+                    Vertix v2 = graph[(item.Value / width), ((item.Value) - ((item.Value / width) * width))];
+
+                    var parent1 = data.Find(v1);
+                    var parent2 = data.Find(v2);
+
+                    if (parent1 == parent2)
+                        continue;
+
+                    double intensityC1 = parent1.Component.MaxInternalWeight;
+                    double intensityC2 = parent2.Component.MaxInternalWeight;
+                    double threshold1 = (double)data.K / parent1.Component.VertixCount;
+                    double threshold2 = (double)data.K / parent2.Component.VertixCount;
+                    double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
+
+                    if (min >= i)
+                    {
+                        data.Union(v1, v2, i);
+                    }
                 }
             }
-
             Dictionary<Vertix, int> componentIds = new Dictionary<Vertix, int>();
             int compCounter = 1;
             for (int i = 0; i < graph.GetLength(0); i++)

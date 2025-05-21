@@ -157,72 +157,54 @@ namespace ImageTemplate.Classes
         {
             int n = image.GetLength(0);
             int m = image.GetLength(1);
-            Vertix[,] verticesR=null;
-            Vertix[,] verticesG= null;
-            Vertix[,] verticesB = null;
-            // Initialize
-            Parallel.Invoke(
-                () =>
-                {
-                    verticesR = InitializeVertices(n, m);
-                },
-                () =>
-                {
-                    verticesG = InitializeVertices(n, m);
-                },
-                () =>
-                {
-                    verticesB = InitializeVertices(n, m);
-                }
-            );
-            // Pre-allocate edge lists
-            int estimatedEdges = n * m * 4;
-            data.edgesR = new KeyValuePair<KeyValuePair<int, int>, double>[estimatedEdges];
-            data.edgesG = new KeyValuePair<KeyValuePair<int, int>, double>[estimatedEdges];
-            data.edgesB = new KeyValuePair<KeyValuePair<int, int>, double>[estimatedEdges];
-            // Directions to check (right, down, down-left, down-right)
+            Vertix[,] verticesR= new Vertix[n, m];
+            Vertix[,] verticesG= new Vertix[n, m];
+            Vertix[,] verticesB = new Vertix[n, m];
+
+            data.edgesR = new List<KeyValuePair<int, int>>[256];
+            data.edgesG = new List<KeyValuePair<int, int>>[256];
+            data.edgesB = new List<KeyValuePair<int, int>>[256];
+
             int[] dx = { 0, 1, 1, 1 };
             int[] dy = { 1, 0, -1, 1 };
-            // Process in parallel
-            Parallel.Invoke(
-                () => ProcessEdges(image, verticesR, data.edgesR, dx, dy, (p) => p.red),
-                () => ProcessEdges(image, verticesG, data.edgesG, dx, dy, (p) => p.green),
-                () => ProcessEdges(image, verticesB, data.edgesB, dx, dy, (p) => p.blue)
-            );
+            ProcessEdges(image, verticesR, data.edgesR, dx, dy, (p) => p.red);
+            ProcessEdges(image, verticesG, data.edgesG, dx, dy, (p) => p.green);
+            ProcessEdges(image, verticesB, data.edgesB, dx, dy, (p) => p.blue);
+            //Parallel.Invoke(
+            //    () => ProcessEdges(image, verticesR, data.edgesR, dx, dy, (p) => p.red),
+            //    () => ProcessEdges(image, verticesG, data.edgesG, dx, dy, (p) => p.green),
+            //    () => ProcessEdges(image, verticesB, data.edgesB, dx, dy, (p) => p.blue)
+            //);
             return (verticesR, verticesG, verticesB);
         }
-        private Vertix[,] InitializeVertices(int n, int m)
-        {
-            var vertices = new Vertix[n, m];
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < m; j++)
-                {
-                    vertices[i, j] = new Vertix { x = i, y = j };
-                    vertices[i, j].Parent = vertices[i, j];
-                }
-            }
-            return vertices;
-        }
-
-        private void ProcessEdges(RGBPixel[,] image, Vertix[,] vertices, KeyValuePair<KeyValuePair<int, int>,double>[] edges, int[] dx, int[] dy, Func<RGBPixel, int> colorSelector)
+        private void ProcessEdges(RGBPixel[,] image, Vertix[,] vertices, List<KeyValuePair<int, int>>[] edges, int[] dx, int[] dy, Func<RGBPixel, int> colorSelector)
         {
             int n = image.GetLength(0);
             int m = image.GetLength(1);
-            
-            int count = 0;
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < m; j++)
                 {
+                    if (vertices[i,j]== null)
+                    {
+                        vertices[i,j]=new Vertix { x = i, y = j };
+                        vertices[i, j].Parent = vertices[i, j];
+                    }
                     for (int s = 0; s < dx.Length; s++)
                     {
                         int x = i + dx[s];
                         int y = j + dy[s];
                         if (x >= 0 && x < n && y >= 0 && y < m)
                         {
-                            edges[count] = new KeyValuePair<KeyValuePair<int, int>, double>(new KeyValuePair<int, int>((j+(i*m)), (y+(x*m))), Math.Abs(colorSelector(image[i, j]) - colorSelector(image[x, y])));
-                            count++;
+                            if (vertices[x, y] == null)
+                            {
+                                vertices[x, y] = new Vertix { x = x, y = y };
+                                vertices[x, y].Parent = vertices[x, y];
+                            }
+                            int diff = Math.Abs(colorSelector(image[i, j]) - colorSelector(image[x, y]));
+                            if (edges[diff] == null)
+                                edges[diff] = new List<KeyValuePair<int, int>>();
+                            edges[diff].Add(new KeyValuePair<int, int>((j + (i * m)), (y + (x * m))));
                         }
                     }
                 }
