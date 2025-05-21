@@ -1,0 +1,165 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "F:\\Algo_Project\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|f:\\algo_project\\imagesegmentation\\classes\\mainflow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\classes\\mainflow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\classes\\rgbcolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\classes\\rgbcolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\interfaces\\icolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\interfaces\\icolor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\classes\\dictionarywriter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\classes\\dictionarywriter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\fastersort.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\fastersort.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|F:\\Algo_Project\\imagesegmentation\\imageoperations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7CA8077F-C27A-400D-B6C9-7737665499AC}|ImageSegmentation\\ImageSegmentation.csproj|solutionrelative:imagesegmentation\\imageoperations.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\MainForm.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\MainForm.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\MainForm.cs",
+              "RelativeToolTip": "ImageSegmentation\\MainForm.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAgwDcAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-21T03:16:51.393Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FasterSort.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\FasterSort.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\FasterSort.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\FasterSort.cs",
+              "RelativeToolTip": "ImageSegmentation\\FasterSort.cs",
+              "ViewState": "AgIAAD4AAAAAAAAAAAAqwAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-21T03:00:54.292Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RGBColor.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\Classes\\RGBColor.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\Classes\\RGBColor.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\Classes\\RGBColor.cs",
+              "RelativeToolTip": "ImageSegmentation\\Classes\\RGBColor.cs",
+              "ViewState": "AgIAAKoAAAAAAAAAAAAlwLIAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T17:53:46.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DictionaryWriter.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\Classes\\DictionaryWriter.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\Classes\\DictionaryWriter.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\Classes\\DictionaryWriter.cs",
+              "RelativeToolTip": "ImageSegmentation\\Classes\\DictionaryWriter.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBUAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T17:29:19.64Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainFlow.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\Classes\\MainFlow.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\Classes\\MainFlow.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\Classes\\MainFlow.cs",
+              "RelativeToolTip": "ImageSegmentation\\Classes\\MainFlow.cs",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAgwNIAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T17:15:43.555Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ImageOperations.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\ImageOperations.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\ImageOperations.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\ImageOperations.cs",
+              "RelativeToolTip": "ImageSegmentation\\ImageOperations.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAAAGwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-21T03:07:45.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IColor.cs",
+              "DocumentMoniker": "F:\\Algo_Project\\ImageSegmentation\\Interfaces\\IColor.cs",
+              "RelativeDocumentMoniker": "ImageSegmentation\\Interfaces\\IColor.cs",
+              "ToolTip": "F:\\Algo_Project\\ImageSegmentation\\Interfaces\\IColor.cs",
+              "RelativeToolTip": "ImageSegmentation\\Interfaces\\IColor.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAhwCcAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T17:27:27.296Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
