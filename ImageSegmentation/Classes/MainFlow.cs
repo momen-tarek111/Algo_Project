@@ -1,15 +1,9 @@
-﻿using FasterSort;
-using ImageTemplate.Interfaces;
+﻿using ImageTemplate.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace ImageTemplate.Classes
 {
@@ -18,33 +12,18 @@ namespace ImageTemplate.Classes
     {
         public static RGBPixel[,] First(RGBPixel [,] image)
         {
-            Stopwatch timer = Stopwatch.StartNew();
-            Vertix[,] verticesR ;
+            Vertix[,] verticesR;
             Vertix[,] verticesG;
             Vertix[,] verticesB;
             Stopwatch timer2 = Stopwatch.StartNew();
-            (verticesR, verticesG, verticesB) = MakeGraph(image,new RGBColor());
+            Dictionary<int, int> pixelCounts;
+            Stopwatch timer = Stopwatch.StartNew();
+            (verticesR, verticesG, verticesB) = RGBColor.construncGraph(image);
             timer2.Stop();
             data.time3 = timer2.ElapsedMilliseconds;
-
-            //Parallel.Invoke(
-            //() =>
-            //    {
-            //        MergeInsertionSort(data.edgesR);
-            //    },
-            //    () =>
-            //    {
-            //        MergeInsertionSort(data.edgesG);
-            //    },
-            //    () =>
-            //    {
-            //        MergeInsertionSort(data.edgesB);
-            //    }
-            //);
-
             Stopwatch timer4 = Stopwatch.StartNew();
             Parallel.Invoke(
-            () =>
+                () =>
                 {
                     verticesG = SegmentationLogic(verticesG, data.edgesG);
                 },
@@ -59,192 +38,34 @@ namespace ImageTemplate.Classes
             );
             timer4.Stop();
             data.time4 = timer4.ElapsedMilliseconds;
-            Dictionary<int, int> pixelCounts;
             Stopwatch timer3 = Stopwatch.StartNew();
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
             timer3.Stop();
             data.time2 = timer3.ElapsedMilliseconds;
-            timer.Stop();
             data.time = timer.ElapsedMilliseconds;
-            //data.edgesR.Clear();
-            //data.edgesG.Clear();
-            //data.edgesB.Clear();
             data.counter = 0;
-            DictionaryWriter.WriteValuesToFile(pixelCounts, "C:\\Users\\karas\\Desktop\\output_project_algo.txt", "C:\\Users\\karas\\Desktop\\Time.txt");
+            Dictionary<int, int> sortedDict = SortByValueDescending(pixelCounts).ToDictionary(pair => pair.Key, pair => pair.Value);
+            timer.Stop();
+            DictionaryWriter.WriteValuesToFile(sortedDict, "C:\\Users\\karas\\Desktop\\output_project_algo.txt", "C:\\Users\\karas\\Desktop\\Time.txt");
             return outputImage;
         }
-        public static (Vertix[,], Vertix[,], Vertix[,]) MakeGraph(RGBPixel[,] image , IColor color)
-        {
-            return color.construncGraph(image);
-        }
-        
-        #region Merge Insertion Sort
-        public static void MergeInsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] array)
-        {
-            var temp = new KeyValuePair<KeyValuePair<int, int>, double>[array.Length];
-            MergeInsertionSort(array, temp, 0, array.Length - 1);
-        }
-
-        private static void MergeInsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] arr,KeyValuePair<KeyValuePair<int, int>, double>[] temp, int left, int right)
-        {
-            if (right - left <= 50)
-            {
-                InsertionSort(arr, left, right);
-                return;
-            }
-
-            int mid = (left + right) / 2;
-            MergeInsertionSort(arr, temp, left, mid);
-            MergeInsertionSort(arr, temp, mid + 1, right);
-            Merge(arr, temp, left, mid, right);
-        }
-
-        private static void InsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] arr, int left, int right)
-        {
-            for (int i = left + 1; i <= right; i++)
-            {
-                var key = arr[i];
-                int j = i - 1;
-                while (j >= left && arr[j].Value > key.Value)
-                {
-                    arr[j + 1] = arr[j];
-                    j--;
-                }
-                arr[j + 1] = key;
-            }
-        }
-
-        private static void Merge(KeyValuePair<KeyValuePair<int, int>, double>[] arr, KeyValuePair<KeyValuePair<int, int>, double>[] temp, int left, int mid, int right)
-        {
-            int i = left, j = mid + 1, k = left;
-
-            while (i <= mid && j <= right)
-            {
-                temp[k++] = (arr[i].Value <= arr[j].Value) ? arr[i++] : arr[j++];
-            }
-
-            while (i <= mid) temp[k++] = arr[i++];
-            while (j <= right) temp[k++] = arr[j++];
-
-            for (int idx = left; idx <= right; idx++)
-                arr[idx] = temp[idx];
-        }
-        #endregion
-        #region Quick Insertion Sort
-        public static void QuickInsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] arr)
-        {
-            const int INSERTION_SORT_THRESHOLD = 32;
-            QuickInsertionSort(arr, 0, arr.Length - 1, INSERTION_SORT_THRESHOLD);
-        }
-
-        private static void QuickInsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] arr, int low, int high, int threshold)
-        {
-            while (low < high)
-            {
-                if (high - low + 1 <= threshold)
-                {
-                    InsertionSort(arr, low, high);
-                    break;
-                }
-
-                int pivotIndex = Partition(arr, low, high);
-
-                if (pivotIndex - low < high - pivotIndex)
-                {
-                    QuickInsertionSort(arr, low, pivotIndex - 1, threshold);
-                    low = pivotIndex + 1;
-                }
-                else
-                {
-                    QuickInsertionSort(arr, pivotIndex + 1, high, threshold);
-                    high = pivotIndex - 1;
-                }
-            }
-        }
-
-        private static int Partition(KeyValuePair<KeyValuePair<int, int>, double>[] arr, int low, int high)
-        {
-            var pivot = arr[high];
-            int i = low - 1;
-
-            for (int j = low; j < high; j++)
-            {
-                if (arr[j].Value <= pivot.Value)
-                {
-                    i++;
-                    (arr[i], arr[j]) = (arr[j], arr[i]);
-                }
-            }
-
-            (arr[i + 1], arr[high]) = (arr[high], arr[i + 1]);
-            return i + 1;
-        }
-
-        //private static void InsertionSort(KeyValuePair<KeyValuePair<int, int>, double>[] arr, int low, int high)
-        //{
-        //    for (int i = low + 1; i <= high; i++)
-        //    {
-        //        var key = arr[i];
-        //        int j = i - 1;
-
-        //        while (j >= low && arr[j].Value > key.Value)
-        //        {
-        //            arr[j + 1] = arr[j];
-        //            j--;
-        //        }
-
-        //        arr[j + 1] = key;
-        //    }
-        //}
-        #endregion
-
-        public static Vertix[,] SegmentationLogic(Vertix[,] graph, List<KeyValuePair<int, int>>[] edges)
+        public static Vertix[,] SegmentationLogic(Vertix[,] graph, List<int>[] edges)
         {
             Stopwatch timer = Stopwatch.StartNew();
             int height = graph.GetLength(0);
             int width = graph.GetLength(1);
-            //edges = SortEdges2(edges);
-            //MergeInsertionSort(edges);
-            //FasterSort.FasterSort.Sort(edges, Comparer<Edge>.Create((a, b) => a.Weight.CompareTo(b.Weight)));
-            timer.Stop();
-            data.time2=timer.ElapsedMilliseconds;
-            //foreach (var item in edges)
-            //{
-            //    double diff = item.Value;
-                
-            //    Vertix v1 = graph[(item.Key.Key/ width), ((item.Key.Key)- ((item.Key.Key / width)*width))];
-            //    Vertix v2 = graph[(item.Key.Value / width), ((item.Key.Value) - ((item.Key.Value / width)*width))];
-
-            //    var parent1 = data.Find(v1);
-            //    var parent2 = data.Find(v2);
-
-            //    if (parent1 == parent2)
-            //        continue;
-
-            //    double intensityC1 = parent1.Component.MaxInternalWeight;
-            //    double intensityC2 = parent2.Component.MaxInternalWeight;
-            //    double threshold1 = (double)data.K / parent1.Component.VertixCount;
-            //    double threshold2 = (double)data.K / parent2.Component.VertixCount;
-            //    double min = Math.Min(intensityC1 + threshold1, intensityC2 + threshold2);
-
-            //    if (min >= diff)
-            //    {
-            //        data.Union(v1, v2, diff);
-            //    }
-            //}
+           
             for (int i = 0; i < 256; i++)
             {
                 if (edges[i] == null)
                     continue;
-                foreach (var item in edges[i])
+
+                for(int j=0;j<edges[i].Count;j+=2)
                 {
-
-                    Vertix v1 = graph[(item.Key / width), ((item.Key) - ((item.Key / width) * width))];
-                    Vertix v2 = graph[(item.Value / width), ((item.Value) - ((item.Value / width) * width))];
-
+                    Vertix v1 = graph[(edges[i][j] / width), ((edges[i][j]) - ((edges[i][j] / width) * width))];
+                    Vertix v2 = graph[(edges[i][j+1] / width), ((edges[i][j+1]) - ((edges[i][j+1] / width) * width))];
                     var parent1 = data.Find(v1);
                     var parent2 = data.Find(v2);
-
                     if (parent1 == parent2)
                         continue;
 
@@ -260,22 +81,22 @@ namespace ImageTemplate.Classes
                     }
                 }
             }
-            Dictionary<Vertix, int> componentIds = new Dictionary<Vertix, int>();
-            int compCounter = 1;
-            for (int i = 0; i < graph.GetLength(0); i++)
-            {
-                for (int j = 0; j < graph.GetLength(1); j++)
-                {
-                    var root = data.Find(graph[i, j]);
+            //Dictionary<Vertix, int> componentIds = new Dictionary<Vertix, int>();
+            //int compCounter = 1;
+            //for (int i = 0; i < graph.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < graph.GetLength(1); j++)
+            //    {
+            //        var root = data.Find(graph[i, j]);
 
-                    if (!componentIds.ContainsKey(root))
-                    {
-                        componentIds[root] = compCounter++;
-                    }
+            //        if (!componentIds.ContainsKey(root))
+            //        {
+            //            componentIds[root] = compCounter++;
+            //        }
 
-                    graph[i, j].Component.ComponentId = componentIds[root];
-                }
-            }
+            //        graph[i, j].Component.ComponentId = componentIds[root];
+            //    }
+            //}
             return graph;
         }
 
@@ -296,7 +117,13 @@ namespace ImageTemplate.Classes
                 {
                     if (visited[i, j])
                         continue;
+                    else
+                    {
+                        redGraph[i, j].Component.ComponentId = data.Find(redGraph[i, j]).Component.ComponentId;
+                        greenGraph[i, j].Component.ComponentId = data.Find(greenGraph[i, j]).Component.ComponentId;
+                        blueGraph[i, j].Component.ComponentId = data.Find(blueGraph[i, j]).Component.ComponentId;
 
+                    }
                     int currentRegion = RegionId++;
                     RGBPixel regionColor = new RGBPixel(
                         (byte)rand.Next(256),
@@ -328,7 +155,12 @@ namespace ImageTemplate.Classes
                                 continue;
                             if (visited[nx, ny])
                                 continue;
-
+                            //redGraph[nx, ny].Component.ComponentId = data.Find(redGraph[nx, ny]).Component.ComponentId;
+                            //greenGraph[nx, ny].Component.ComponentId = data.Find(greenGraph[nx, ny]).Component.ComponentId;
+                            //blueGraph[nx, ny].Component.ComponentId = data.Find(blueGraph[nx, ny]).Component.ComponentId;
+                            //redGraph[x, y].Component.ComponentId = data.Find(redGraph[x, y]).Component.ComponentId;
+                            //greenGraph[x, y].Component.ComponentId = data.Find(greenGraph[x, y]).Component.ComponentId;
+                            //blueGraph[x, y].Component.ComponentId = data.Find(blueGraph[x, y]).Component.ComponentId;
                             if (
                                 redGraph[x, y].Component.ComponentId == redGraph[nx, ny].Component.ComponentId &&
                                 greenGraph[x, y].Component.ComponentId == greenGraph[nx, ny].Component.ComponentId &&
@@ -344,6 +176,63 @@ namespace ImageTemplate.Classes
             }
             return result;
         }
+        
+        
+        #region Merge Insertion sort
+       
+        public static List<KeyValuePair<int, int>> SortByValueDescending(Dictionary<int, int> dict)
+        {
+            var list = dict.ToList();
+            var temp = new KeyValuePair<int, int>[list.Count];
+            MergeInsertionSort(list, temp, 0, list.Count - 1);
+            return list;
+        }
+
+        private static void MergeInsertionSort(List<KeyValuePair<int, int>> list, KeyValuePair<int, int>[] temp, int left, int right)
+        {
+            if (right - left <= 32)
+            {
+                InsertionSort(list, left, right);
+                return;
+            }
+            int mid = (left + right) / 2;
+            MergeInsertionSort(list, temp, left, mid);
+            MergeInsertionSort(list, temp, mid + 1, right);
+            Merge(list, temp, left, mid, right);
+        }
+
+        private static void InsertionSort(List<KeyValuePair<int, int>> list, int left, int right)
+        {
+            for (int i = left + 1; i <= right; i++)
+            {
+                var key = list[i];
+                int j = i - 1;
+
+                while (j >= left && list[j].Value < key.Value) // Descending
+                {
+                    list[j + 1] = list[j];
+                    j--;
+                }
+                list[j + 1] = key;
+            }
+        }
+
+        private static void Merge(List<KeyValuePair<int, int>> list, KeyValuePair<int, int>[] temp, int left, int mid, int right)
+        {
+            int i = left, j = mid + 1, k = left;
+
+            while (i <= mid && j <= right)
+            {
+                temp[k++] = (list[i].Value >= list[j].Value) ? list[i++] : list[j++];
+            }
+
+            while (i <= mid) temp[k++] = list[i++];
+            while (j <= right) temp[k++] = list[j++];
+
+            for (int idx = left; idx <= right; idx++)
+                list[idx] = temp[idx];
+        }
+        #endregion 
 
     }
 }

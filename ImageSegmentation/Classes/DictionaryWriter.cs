@@ -6,12 +6,12 @@ using System.Linq;
 
 public class DictionaryWriter
 {
-    public static void WriteValuesToFile<TKey, TValue>(Dictionary<TKey, TValue> dict, string filePath,string timeFilePath)
+    public static void WriteValuesToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> collection,string filePath,string timeFilePath)
     {
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            writer.WriteLine(dict.Count);
-            foreach (var value in dict.OrderByDescending(p => p.Value))
+            writer.WriteLine(collection.Count());
+            foreach (var value in collection)
             {
                 writer.WriteLine(value.Value);
             }
