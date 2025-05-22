@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 using System.Windows.Forms;
 
@@ -54,6 +55,13 @@ namespace ImageTemplate
                 ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             }
             ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox2.Image.Save(saveFileDialog1.FileName, ImageFormat.Bmp);
+            }
             MessageBox.Show($"Total Time {data.time/1000.0} s");
         }
         private void MainForm_Load(object sender, EventArgs e)

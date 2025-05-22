@@ -18,25 +18,28 @@ namespace ImageTemplate.Classes
             Dictionary<int, int> pixelCounts;
             Stopwatch timer = Stopwatch.StartNew();
             (verticesR, verticesG, verticesB) = RGBColor.construncGraph(image);
-            Parallel.Invoke(
-                () =>
-                {
-                    verticesG = SegmentationLogic(verticesG, data.edgesG);
-                },
-                () =>
-                {
-                    verticesR = SegmentationLogic(verticesR, data.edgesR);
-                },
-                () =>
-                {
-                    verticesB = SegmentationLogic(verticesB, data.edgesB);
-                }
-            );
+            //Parallel.Invoke(
+            //    () =>
+            //    {
+            //        verticesG = SegmentationLogic(verticesG, data.edgesG);
+            //    },
+            //    () =>
+            //    {
+            //        verticesR = SegmentationLogic(verticesR, data.edgesR);
+            //    },
+            //    () =>
+            //    {
+            //        verticesB = SegmentationLogic(verticesB, data.edgesB);
+            //    }
+            //);
+            verticesG = SegmentationLogic(verticesG, data.edgesG);
+            verticesR = SegmentationLogic(verticesR, data.edgesR);
+            verticesB = SegmentationLogic(verticesB, data.edgesB);
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
             data.time = timer.ElapsedMilliseconds;
             Dictionary<int, int> sortedDict = SortByValueDescending(pixelCounts).ToDictionary(pair => pair.Key, pair => pair.Value);
             timer.Stop();
-            DictionaryWriter.WriteValuesToFile(sortedDict, "C:\\Users\\karas\\Desktop\\output_project_algo.txt", "C:\\Users\\karas\\Desktop\\Time.txt");
+            DictionaryWriter.WriteValuesToFile(sortedDict, "C:\\Users\\karas\\Desktop\\output_project_algo.txt");
             return outputImage;
         }
         public static Vertix[,] SegmentationLogic(Vertix[,] graph, List<int>[] edges)
