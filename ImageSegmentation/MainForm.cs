@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ImageTemplate
@@ -34,7 +35,7 @@ namespace ImageTemplate
             txtHeight.Text = ImageOperations.GetHeight(ImageMatrix).ToString();
         }
 
-        private void btnGaussSmooth_Click(object sender, EventArgs e)
+        private async void btnGaussSmooth_Click(object sender, EventArgs e)
         {
             selectedRegions.Clear();
             double sigma = double.Parse(txtGaussSigma.Text);
@@ -54,7 +55,12 @@ namespace ImageTemplate
             {
                 ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             }
-            ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
+            await Task.Run(() =>
+            {
+                ImageMatrix = MainFlow.First(ImageMatrix);
+            });
+            
+            ImageOperations.DisplayImage(ImageMatrix,pictureBox2);
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "bmp files (*.bmp)|*.bmp|All files (*.*)|*.*";
             saveFileDialog1.RestoreDirectory = true;

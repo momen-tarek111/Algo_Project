@@ -92,7 +92,6 @@ namespace ImageTemplate.Classes
             //}
             return graph;
         }
-
         public static RGBPixel[,] CombineAndVisualize(Vertix[,] redGraph, Vertix[,] greenGraph, Vertix[,] blueGraph,out Dictionary<int, int> regionPixelCounts)
         {
             int height = redGraph.GetLength(0);
@@ -169,8 +168,6 @@ namespace ImageTemplate.Classes
             }
             return result;
         }
-        
-        
         #region Merge Insertion sort
        
         public static List<KeyValuePair<int, int>> SortByValueDescending(Dictionary<int, int> dict)
