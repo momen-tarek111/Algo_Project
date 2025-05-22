@@ -28,7 +28,7 @@ namespace ImageTemplate.Interfaces
         public static int[] dy = { 0 , 0, 1, -1, 1, -1, 1,-1 };
         public static int[,] FinalLabels;
         public static RGBPixel[,] OriginImage;
-        public static long time;
+        public static double time;
         public static long time2;
         public static long time3;
         public static long time4;

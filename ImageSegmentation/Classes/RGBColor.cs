@@ -59,10 +59,13 @@ namespace ImageTemplate.Classes
                                 data.edgesG[diff2] = new List<int>();
                             if (data.edgesB[diff3] == null)
                                 data.edgesB[diff3] = new List<int>();
+
                             data.edgesR[diff1].Add((j + (i * m)));
                             data.edgesR[diff1].Add((y + (x * m)));
+
                             data.edgesG[diff2].Add((j + (i * m)));
                             data.edgesG[diff2].Add((y + (x * m)));
+
                             data.edgesB[diff3].Add((j + (i * m)));
                             data.edgesB[diff3].Add((y + (x * m)));
                         }

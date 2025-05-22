@@ -54,6 +54,7 @@ namespace ImageTemplate
                 ImageMatrix = ImageOperations.GaussianFilter1D(ImageMatrix, maskSize, sigma);
             }
             ImageOperations.DisplayImage(MainFlow.First(ImageMatrix), pictureBox2);
+            MessageBox.Show($"Total Time {data.time/1000.0} s");
         }
         private void MainForm_Load(object sender, EventArgs e)
         {

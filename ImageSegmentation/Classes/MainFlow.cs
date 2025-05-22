@@ -15,13 +15,9 @@ namespace ImageTemplate.Classes
             Vertix[,] verticesR;
             Vertix[,] verticesG;
             Vertix[,] verticesB;
-            Stopwatch timer2 = Stopwatch.StartNew();
             Dictionary<int, int> pixelCounts;
             Stopwatch timer = Stopwatch.StartNew();
             (verticesR, verticesG, verticesB) = RGBColor.construncGraph(image);
-            timer2.Stop();
-            data.time3 = timer2.ElapsedMilliseconds;
-            Stopwatch timer4 = Stopwatch.StartNew();
             Parallel.Invoke(
                 () =>
                 {
@@ -36,14 +32,8 @@ namespace ImageTemplate.Classes
                     verticesB = SegmentationLogic(verticesB, data.edgesB);
                 }
             );
-            timer4.Stop();
-            data.time4 = timer4.ElapsedMilliseconds;
-            Stopwatch timer3 = Stopwatch.StartNew();
             RGBPixel[,] outputImage = CombineAndVisualize(verticesR, verticesG, verticesB, out pixelCounts);
-            timer3.Stop();
-            data.time2 = timer3.ElapsedMilliseconds;
             data.time = timer.ElapsedMilliseconds;
-            data.counter = 0;
             Dictionary<int, int> sortedDict = SortByValueDescending(pixelCounts).ToDictionary(pair => pair.Key, pair => pair.Value);
             timer.Stop();
             DictionaryWriter.WriteValuesToFile(sortedDict, "C:\\Users\\karas\\Desktop\\output_project_algo.txt", "C:\\Users\\karas\\Desktop\\Time.txt");
@@ -122,7 +112,6 @@ namespace ImageTemplate.Classes
                         redGraph[i, j].Component.ComponentId = data.Find(redGraph[i, j]).Component.ComponentId;
                         greenGraph[i, j].Component.ComponentId = data.Find(greenGraph[i, j]).Component.ComponentId;
                         blueGraph[i, j].Component.ComponentId = data.Find(blueGraph[i, j]).Component.ComponentId;
-
                     }
                     int currentRegion = RegionId++;
                     RGBPixel regionColor = new RGBPixel(
@@ -155,13 +144,14 @@ namespace ImageTemplate.Classes
                                 continue;
                             if (visited[nx, ny])
                                 continue;
-                            //redGraph[nx, ny].Component.ComponentId = data.Find(redGraph[nx, ny]).Component.ComponentId;
-                            //greenGraph[nx, ny].Component.ComponentId = data.Find(greenGraph[nx, ny]).Component.ComponentId;
-                            //blueGraph[nx, ny].Component.ComponentId = data.Find(blueGraph[nx, ny]).Component.ComponentId;
-                            //redGraph[x, y].Component.ComponentId = data.Find(redGraph[x, y]).Component.ComponentId;
-                            //greenGraph[x, y].Component.ComponentId = data.Find(greenGraph[x, y]).Component.ComponentId;
-                            //blueGraph[x, y].Component.ComponentId = data.Find(blueGraph[x, y]).Component.ComponentId;
-                            if (
+                            redGraph[nx, ny].Component.ComponentId = data.Find(redGraph[nx, ny]).Component.ComponentId;
+                            greenGraph[nx, ny].Component.ComponentId = data.Find(greenGraph[nx, ny]).Component.ComponentId;
+                            blueGraph[nx, ny].Component.ComponentId = data.Find(blueGraph[nx, ny]).Component.ComponentId;
+                            redGraph[x, y].Component.ComponentId = data.Find(redGraph[x, y]).Component.ComponentId;
+                            greenGraph[x, y].Component.ComponentId = data.Find(greenGraph[x, y]).Component.ComponentId;
+                            blueGraph[x, y].Component.ComponentId = data.Find(blueGraph[x, y]).Component.ComponentId;
+                            if
+                            (
                                 redGraph[x, y].Component.ComponentId == redGraph[nx, ny].Component.ComponentId &&
                                 greenGraph[x, y].Component.ComponentId == greenGraph[nx, ny].Component.ComponentId &&
                                 blueGraph[x, y].Component.ComponentId == blueGraph[nx, ny].Component.ComponentId
